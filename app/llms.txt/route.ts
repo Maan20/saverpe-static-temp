@@ -1,4 +1,4 @@
-import { brands, categories, getCategory, occasions } from "@/lib/brands";
+import { brands, budgetTiers, categories, formatInr, getCategory, occasions } from "@/lib/brands";
 import { blogCategories, posts } from "@/lib/blog";
 import { absoluteUrl, site } from "@/lib/site";
 import { faqGroups } from "@/content/faqs";
@@ -19,12 +19,17 @@ export function GET() {
     `- [How it works](${absoluteUrl("/how-it-works")}): choosing, sending and redeeming e-gift cards`,
     `- [FAQs](${absoluteUrl("/faq")}): delivery, validity, redemption, refunds and safety`,
     `- [About SaverPe](${absoluteUrl("/about-us")})`,
+    `- [Gift card glossary](${absoluteUrl("/glossary")}): definitions of e-voucher, validity, partial redemption, PIN and more`,
+    `- [Editorial policy](${absoluteUrl("/editorial-policy")}): how brand information and guides are researched and updated`,
     `- [Contact](${absoluteUrl("/contact-us")})`,
     `- [Refund policy](${absoluteUrl("/refund-policy")})`,
     `- [Full content for LLMs](${absoluteUrl("/llms-full.txt")})`,
     "",
     "## Categories",
     ...categories.map((c) => `- [${c.name} gift cards](${absoluteUrl(`/categories/${c.id}`)})`),
+    "",
+    "## Gift cards by budget",
+    ...budgetTiers.map((a) => `- [Gift cards under ${formatInr(a)}](${absoluteUrl(`/gift-cards-under/${a}`)})`),
     "",
     "## Occasions",
     ...occasions.map((o) => `- [${o.name} gift cards](${absoluteUrl(`/occasions/${o.id}`)})`),

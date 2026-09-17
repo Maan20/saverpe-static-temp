@@ -1,10 +1,23 @@
-import { brands, formatInr, getCategory, priceSummary } from "@/lib/brands";
+import { brands, formatInr, getCategory, priceSummary, type Brand } from "@/lib/brands";
+import { brandFacts, channelPhrase } from "@/lib/brand-facts";
 import { posts } from "@/lib/blog";
 import { plainText } from "@/lib/markdown";
 import { absoluteUrl, site } from "@/lib/site";
 import { faqGroups } from "@/content/faqs";
 
 export const dynamic = "force-static";
+
+function factLines(b: Brand) {
+  const f = brandFacts(b);
+  const where = channelPhrase(f);
+  return [
+    where ? `Where to use: ${where}` : "",
+    f.partialRedemption !== null ? `Partial redemption: ${f.partialRedemption ? "allowed" : "not allowed (single use)"}` : "",
+    f.multipleCards !== null ? `Multiple cards per bill: ${f.multipleCards ? (f.multipleCardLimit ? `yes, up to ${f.multipleCardLimit}` : "yes") : "no"}` : "",
+    f.clubWithOffers === false ? "Can be combined with other offers: no" : "",
+  ];
+}
+
 
 export function GET() {
   const parts = [
@@ -22,6 +35,7 @@ export function GET() {
         `Category: ${getCategory(b.category)?.name}`,
         `Value: ${priceSummary(b.price)}${b.price.denominations?.length ? ` (denominations: ${b.price.denominations.map(formatInr).join(", ")})` : ""}`,
         b.expiry ? `Validity: ${b.expiry}` : "",
+        ...factLines(b),
         b.description ? `About: ${b.description.replace(/\n/g, " ")}` : "",
         b.terms.length ? `Key terms: ${b.terms.slice(0, 6).join(" | ")}` : "",
       ]

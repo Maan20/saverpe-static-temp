@@ -4,7 +4,7 @@ import { Gift, ShieldCheck, Zap } from "lucide-react";
 import BrandCatalog, { type CatalogBrand } from "@/components/BrandCatalog";
 import JsonLd from "@/components/JsonLd";
 import { CtaBand, FaqList, PageHero } from "@/components/ui";
-import { brands, brandsInCategory, categories, getCategory, priceSummary } from "@/lib/brands";
+import { brands, brandsInCategory, brandsUnder, budgetTiers, categories, formatInr, getCategory, priceSummary } from "@/lib/brands";
 import { itemListJsonLd, pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
@@ -81,6 +81,20 @@ export default function BrandsPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="container-page mt-16">
+        <h2 className="h-section">Shop gift cards by budget</h2>
+        <ul className="mt-8 grid gap-4 sm:grid-cols-3">
+          {budgetTiers.map((a) => (
+            <li key={a}>
+              <Link href={`/gift-cards-under/${a}`} className="card block p-6 transition hover:-translate-y-0.5 hover:border-brand">
+                <span className="block font-display text-2xl font-extrabold">Under {formatInr(a)}</span>
+                <span className="mt-1 block text-sm text-muted">{brandsUnder(a).length} brands starting at or below {formatInr(a)}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="container-page mt-16 max-w-4xl">

@@ -11,7 +11,7 @@ const files = [...walk(path.join(root, "content")), ...walk(path.join(root, "app
 const blogSlugs = new Set();
 for (const f of walk(path.join(root, "content/blog"))) for (const m of fs.readFileSync(f, "utf8").matchAll(/^\s{4}slug: "([^"]+)"/gm)) blogSlugs.add(m[1]);
 
-const valid = new Set(["/", "/brands", "/categories", "/occasions", "/blog", "/how-it-works", "/about-us", "/faq", "/contact-us", "/privacy-policy", "/terms-of-service", "/refund-policy", "/blog/rss.xml", "/llms.txt", "/llms-full.txt", "/sitemap.xml",
+const valid = new Set(["/", "/brands", "/categories", "/occasions", "/blog", "/how-it-works", "/about-us", "/faq", "/contact-us", "/privacy-policy", "/terms-of-service", "/refund-policy", "/glossary", "/editorial-policy", "/gift-cards-under/500", "/gift-cards-under/1000", "/gift-cards-under/2000", "/blog/rss.xml", "/llms.txt", "/llms-full.txt", "/sitemap.xml",
   ...brands.map((b) => `/brands/${b.slug}`), ...taxonomy.categories.map((c) => `/categories/${c.id}`), ...taxonomy.occasions.map((o) => `/occasions/${o.id}`), ...[...blogSlugs].map((s) => `/blog/${s}`),
   ...["gift-guides", "festivals-occasions", "gift-card-basics", "brand-spotlights", "smart-gifting", "corporate-gifting"].map((c) => `/blog/category/${c}`)]);
 

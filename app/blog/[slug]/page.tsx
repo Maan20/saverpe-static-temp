@@ -9,6 +9,7 @@ import { Breadcrumbs, CtaBand, FaqList } from "@/components/ui";
 import { author, formatDate, getCategory, getPost, posts, relatedPosts } from "@/lib/blog";
 import { Markdown, extractToc, renderInline } from "@/lib/markdown";
 import { absoluteUrl, site } from "@/lib/site";
+import { getBrand, type Brand } from "@/lib/brands";
 import { pageMeta } from "@/lib/seo";
 
 export function generateStaticParams() {
@@ -41,6 +42,9 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
   const toc = extractToc(post.body).filter((t) => t.level === 2);
   const related = relatedPosts(post, 3);
   const url = absoluteUrl(`/blog/${post.slug}`);
+  const mentioned = [...new Set([...post.body.matchAll(/\]\(\/brands\/([a-z0-9-]+)\)/g)].map((m) => m[1]))]
+    .map((s) => getBrand(s))
+    .filter((b): b is Brand => Boolean(b));
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -59,7 +63,8 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
     keywords: post.tags.join(", "),
     inLanguage: "en-IN",
     image: absoluteUrl(`/blog/${post.slug}/opengraph-image`),
-    author: { "@type": "Organization", name: author.name, url: absoluteUrl("/about-us") },
+    author: { "@type": "Organization", name: author.name, url: absoluteUrl("/editorial-policy") },
+    ...(mentioned.length ? { mentions: mentioned.map((b) => ({ "@type": "Brand", name: b.name, url: absoluteUrl(`/brands/${b.slug}`) })) } : {}),
     publisher: { "@id": `${site.url}/#organization` },
   };
 
@@ -115,6 +120,17 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
               </section>
             )}
 
+            {mentioned.length > 0 && (
+              <section className="mt-12 rounded-3xl border border-line bg-white p-6">
+                <h2 className="font-display text-lg font-bold">Brands in this article</h2>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {mentioned.map((b) => (
+                    <li key={b.slug}><Link href={`/brands/${b.slug}`} className="inline-block rounded-full border border-line px-3 py-1.5 text-sm font-semibold hover:border-brand">{b.name} gift card</Link></li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
             <div className="mt-12 flex flex-wrap gap-2">
               {post.tags.map((t) => <span key={t} className="rounded-full bg-sand px-3 py-1 text-xs font-semibold text-muted">#{t}</span>)}
             </div>
@@ -124,6 +140,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
               <div>
                 <p className="font-display font-bold">{author.name}</p>
                 <p className="mt-1 text-sm leading-6 text-muted">{author.bio}</p>
+                <Link href="/editorial-policy" className="mt-2 inline-block text-sm font-bold underline underline-offset-4">How we research and fact-check</Link>
               </div>
             </div>
           </div>

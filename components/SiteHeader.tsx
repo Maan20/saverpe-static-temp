@@ -14,7 +14,7 @@ export default function SiteHeader() {
             <span className="truncate">290+ brand e-gift cards · Delivered digitally · Loved for birthdays, weddings &amp; festivals</span>
           </p>
           <a href={site.orbitUrl} className="hidden shrink-0 items-center gap-1 font-bold text-brand hover:text-brand-300 sm:inline-flex">
-            For Business: Orbit <ArrowUpRight className="size-3.5" aria-hidden />
+            Corporate Gifting · Bulk Gift Cards · API <ArrowUpRight className="size-3.5" aria-hidden />
           </a>
         </div>
       </div>

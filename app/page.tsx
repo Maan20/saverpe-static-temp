@@ -5,6 +5,7 @@ import { ArrowRight, BadgeCheck, Gift, Heart, Mail, Search, ShieldCheck, Sparkle
 import Image from "@/components/Image";
 import BrandCard from "@/components/BrandCard";
 import BlogCard from "@/components/BlogCard";
+import BusinessServices from "@/components/BusinessServices";
 import JsonLd from "@/components/JsonLd";
 import { CtaBand, FaqList, SectionHeading } from "@/components/ui";
 import { categoryIcons, categoryTints, occasionIcons } from "@/components/icons";
@@ -16,8 +17,8 @@ import { itemListJsonLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: { absolute: "SaverPe — Buy & Gift E-Gift Cards from 290+ Top Brands in India" },
-  description: "Gift digital e-gift cards from Amazon, Myntra, Taj, Tanishq, Swiggy and 290+ top brands. Perfect for birthdays, weddings, Diwali and every occasion — delivered by email.",
+  title: { absolute: "Buy E-Gift Cards Online in India | 290+ Brands | SaverPe" },
+  description: "Buy e-gift cards from Amazon, Myntra, Taj, Tanishq, Swiggy and 290+ top brands in India. Delivered by email for birthdays, weddings and Diwali.",
   alternates: { canonical: site.url },
 };
 
@@ -110,7 +111,7 @@ export default function HomePage() {
               <Zap className="size-4 text-brand" /> Delivered by email
             </div>
             <div className="absolute left-4 top-[52%] z-20 flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-ink shadow-xl">
-              <Heart className="size-4 fill-accent text-accent" /> Made with love
+              <Heart className="size-4 fill-accent text-accent" /> Curated For India
             </div>
           </div>
         </div>
@@ -282,6 +283,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* FOR BUSINESS */}
+      <BusinessServices />
 
       {/* TESTIMONIALS */}
       <section className="mt-24 overflow-hidden bg-sand py-20">

@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 
 // TODO: legal review (see CONTENT-TODO.md)
 export const metadata = pageMeta({
-  title: "Privacy Policy",
+  title: "Privacy Policy: How SaverPe Handles Your Data",
   description: "How SaverPe collects, uses and protects your personal information when you browse our website or contact our support team.",
   path: "/privacy-policy",
 });

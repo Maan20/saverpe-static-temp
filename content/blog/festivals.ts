@@ -523,7 +523,7 @@ Explore [Eid gift cards](/occasions/eid).`,
   },
   {
     slug: "valentines-day-gift-cards",
-    title: "Valentine's Day Gift Cards: Romantic Ideas Beyond Roses & Chocolates",
+    title: "Romantic Valentine's Gift Card Ideas Beyond Roses & Chocolates",
     description: "Make Valentine's Day memorable with gift cards for date nights, jewellery, beauty, staycations and experiences — ideas for new couples and long-time partners.",
     category: "festivals-occasions",
     tags: ["Valentine's Day", "romantic gifts", "date night", "couples", "jewellery"],

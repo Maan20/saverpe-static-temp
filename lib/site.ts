@@ -1,12 +1,26 @@
+/**
+ * Reads a URL from an env var, falling back when it is unset, empty or invalid
+ * (e.g. an empty value in the hosting dashboard). Adds https:// if the scheme is missing.
+ */
+function envUrl(value: string | undefined, fallback: string) {
+  const raw = value?.trim();
+  if (!raw) return fallback;
+  try {
+    return new URL(/^https?:\/\//i.test(raw) ? raw : `https://${raw}`).origin;
+  } catch {
+    return fallback;
+  }
+}
+
 export const site = {
   name: "SaverPe",
   legalName: "SaverPe",
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://saverpe.com").replace(/\/$/, ""),
-  orbitUrl: (process.env.NEXT_PUBLIC_ORBIT_URL ?? "https://orbit.saverpe.com").replace(/\/$/, ""),
+  url: envUrl(process.env.NEXT_PUBLIC_SITE_URL, "https://saverpe.com"),
+  orbitUrl: envUrl(process.env.NEXT_PUBLIC_ORBIT_URL, "https://orbit.saverpe.com"),
   email: "support@saverpe.com",
   tagline: "E-gift cards for every moment that matters",
   description:
-    "Discover digital gift cards from 290+ top Indian and international brands — fashion, food, travel, jewellery and more. Gift instantly for birthdays, weddings, Diwali and every celebration.",
+    "Buy e-gift cards online from 290+ top brands in India: fashion, food, travel, jewellery and more, delivered by email for birthdays, weddings and Diwali.",
   locale: "en_IN",
   foundingCountry: "India",
   keywords: [

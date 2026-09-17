@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { ArrowRight, CalendarClock, ChevronDown, CircleCheck, Gift, Mail, ShieldCheck, Tag, Wallet, Zap } from "lucide-react";
+import { ArrowRight, BookOpen, CalendarClock, ChevronDown, CircleCheck, Gift, ListChecks, Mail, ShieldCheck, Sparkles, Tag, Wallet, Zap } from "lucide-react";
 import BrandCard, { BrandLogo } from "@/components/BrandCard";
 import BuyNow, { type BuyBrand } from "@/components/BuyNow";
 import JsonLd from "@/components/JsonLd";
@@ -9,6 +9,9 @@ import { Breadcrumbs, CtaBand, FaqList } from "@/components/ui";
 import { brandImage, brands, formatInr, getBrand, getCategory, getOccasion, priceSummary, relatedBrands, type Brand } from "@/lib/brands";
 import { absoluteUrl, site } from "@/lib/site";
 import { pageMeta } from "@/lib/seo";
+import { brandFacts, channelPhrase, yesNo, type BrandFacts } from "@/lib/brand-facts";
+import { posts } from "@/lib/blog";
+import { categoryCopy } from "@/content/categories";
 
 export function generateStaticParams() {
   return brands.map((b) => ({ slug: b.slug }));
@@ -17,8 +20,33 @@ export function generateStaticParams() {
 export const dynamicParams = false;
 
 function metaDescription(brand: Brand) {
-  const cat = getCategory(brand.category)?.name.toLowerCase();
-  return `Gift a ${brand.name} e-gift card on SaverPe. ${priceSummary(brand.price)} denominations${brand.expiry ? `, validity ${brand.expiry.toLowerCase()}` : ""}. The perfect ${cat} gift, delivered digitally.`.slice(0, 158);
+  const f = brandFacts(brand);
+  const where = channelPhrase(f);
+  const parts = [
+    `Buy a ${brand.name} e-gift card online (${priceSummary(brand.price)})`,
+    brand.expiry ? `valid ${shortExpiry(brand.expiry)}` : null,
+    where ? `use it ${where}` : null,
+  ].filter(Boolean);
+  return `${parts.join(", ")}. Denominations, redemption steps & T&Cs — delivered by email.`;
+}
+
+/** "365 Days from the date of activation" → "for 365 days from activation". */
+function shortExpiry(expiry: string) {
+  return `for ${expiry.replace(/\.$/, "").replace(/the date of /i, "").replace(/\s+/g, " ").trim().toLowerCase()}`;
+}
+
+/** Answer-first summary used at the top of the page, in FAQs and in llms-full.txt. */
+function quickAnswer(brand: Brand, f: BrandFacts) {
+  const bits = [`${brand.name} e-gift cards on SaverPe are available for ${priceSummary(brand.price)}`];
+  if (brand.expiry) bits.push(`and are valid ${shortExpiry(brand.expiry)}`);
+  let text = `${bits.join(" ")}.`;
+  const where = channelPhrase(f);
+  if (where) text += ` According to the brand's terms, the card can be used ${where}.`;
+  if (f.partialRedemption === false) text += " It must be redeemed in a single transaction (no partial redemption).";
+  if (f.partialRedemption === true) text += " Any unused balance can be used on later purchases.";
+  if (f.multipleCards === true) text += ` You can combine ${f.multipleCardLimit ? `up to ${f.multipleCardLimit}` : "multiple"} cards in one bill.`;
+  if (f.multipleCards === false) text += " Only one card can be used per bill.";
+  return `${text} Cards are delivered digitally by email.`;
 }
 
 export async function generateMetadata({ params }: PageProps<"/brands/[slug]">): Promise<Metadata> {
@@ -26,10 +54,10 @@ export async function generateMetadata({ params }: PageProps<"/brands/[slug]">):
   const brand = getBrand(slug);
   if (!brand) return {};
   return pageMeta({
-    title: `${brand.name} E-Gift Card — Denominations, Validity & How to Redeem`.length > 60 ? `${brand.name} E-Gift Card: Validity & How to Redeem` : `${brand.name} E-Gift Card — Denominations, Validity & How to Redeem`,
+    title: `${brand.name} Gift Card Online: Denominations, Validity & How to Redeem`,
     description: metaDescription(brand),
     path: `/brands/${brand.slug}`,
-    keywords: [`${brand.name} gift card`, `${brand.name} e-gift card`, `${brand.name} gift voucher`, `buy ${brand.name} gift card online`, `${brand.name} voucher code`],
+    keywords: [`${brand.name} gift card`, `${brand.name} e-gift card`, `${brand.name} gift voucher`, `buy ${brand.name} gift card online`, `${brand.name} gift card validity`, `how to redeem ${brand.name} gift card`, `${brand.name} voucher India`],
   });
 }
 
@@ -58,12 +86,30 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
     range,
   };
   const related = relatedBrands(brand, 6);
+  const facts = brandFacts(brand);
+  const answer = quickAnswer(brand, facts);
+  const copy = categoryCopy[brand.category];
+  // Articles that already link to this brand come first, then articles from the same category keywords.
+  const mentioning = posts.filter((p) => p.body.includes(`/brands/${brand.slug}`));
+  const categoryWords = (category?.name ?? "").toLowerCase().split(/[ &]+/).filter((w) => w.length > 3);
+  const guides = [...mentioning, ...posts.filter((p) => !mentioning.includes(p) && categoryWords.some((w) => `${p.title} ${p.tags.join(" ")}`.toLowerCase().includes(w)))].slice(0, 3);
+  const factRows: { label: string; value: string }[] = [
+    { label: "Card value", value: priceSummary(brand.price) },
+    { label: "Validity", value: brand.expiry ?? "As per brand terms" },
+    { label: "Where to use", value: channelPhrase(facts) ? channelPhrase(facts)!.replace(/^./, (c) => c.toUpperCase()) : "See brand terms" },
+    { label: "Partial redemption", value: yesNo(facts.partialRedemption, "Allowed", "Not allowed (single use)") },
+    { label: "Multiple cards per bill", value: yesNo(facts.multipleCards, facts.multipleCardLimit ? `Yes, up to ${facts.multipleCardLimit}` : "Yes", "No, one card per bill") },
+    { label: "Combine with offers", value: yesNo(facts.clubWithOffers, "Yes", "No") },
+    { label: "PIN required", value: facts.pinRequired ? "Yes, code + PIN" : "Code (PIN if provided)" },
+    { label: "Delivery", value: "Digital, by email" },
+  ];
   const steps = brand.howToRedeem.length ? brand.howToRedeem : defaultRedeem(brand);
   const denoms = brand.price.denominations ?? [];
   const description = brand.description
     ? brand.description.split("\n")
     : [
         `${brand.name} e-gift cards are a simple way to let someone enjoy ${category?.name.toLowerCase()} on their own terms. Instead of guessing sizes, flavours or styles, you give them the freedom to choose exactly what they want from ${brand.name}.`,
+        ...(copy ? [`${copy.tagline}. ${copy.intro}`, `A ${brand.name} gift card is especially popular for ${copy.perfectFor.join(", ").toLowerCase()}. ${copy.tip}`] : []),
         `Whether it's a birthday, anniversary, festival like Diwali, or a thank-you for someone special, a ${brand.name} gift card is delivered digitally and can be redeemed as per the brand's terms and conditions listed below.`,
       ];
 
@@ -72,6 +118,11 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
     { q: `What is the validity of a ${brand.name} gift card?`, a: brand.expiry ? `The ${brand.name} e-gift card is valid for ${brand.expiry.replace(/\.$/, "")}. Please redeem it before it expires as expired balances usually cannot be restored.` : `Validity is defined by ${brand.name}'s gift card program and is mentioned in the delivery email.` },
     { q: `Which denominations are available for ${brand.name} gift cards?`, a: brand.price.type === "slab" ? `${brand.name} gift cards come in fixed denominations: ${denoms.map(formatInr).join(", ") || "as listed by the brand"}.` : `${brand.name} gift cards can be issued for any value ${brand.price.min && brand.price.max ? `between ${formatInr(brand.price.min)} and ${formatInr(brand.price.max)}` : "within the brand's allowed range"}.` },
     { q: `Can a ${brand.name} gift card be refunded or exchanged for cash?`, a: "No. Like most brand gift cards, it cannot be refunded, cancelled or exchanged for cash once issued. See the full terms and conditions on this page." },
+    ...(channelPhrase(facts) ? [{ q: `Where can I use a ${brand.name} gift card?`, a: `According to the brand's listed terms, the ${brand.name} gift card can be used ${channelPhrase(facts)}. Check the terms on this page for participating locations and exclusions.` }] : []),
+    ...(facts.partialRedemption !== null ? [{ q: `Can I use a ${brand.name} gift card more than once?`, a: facts.partialRedemption ? `Yes. The terms allow partial redemption, so any unused balance can be used on later purchases before the card expires.` : `No. The terms state the card must be redeemed in a single transaction, so plan a purchase close to the card value — any leftover balance is not carried forward.` }] : []),
+    ...(facts.multipleCards !== null ? [{ q: `Can I use more than one ${brand.name} gift card in a single bill?`, a: facts.multipleCards ? `Yes. ${facts.multipleCardLimit ? `Up to ${facts.multipleCardLimit} cards` : "Multiple cards"} can be used against one bill as per the brand's terms.` : "No. The terms allow only one gift card per bill or invoice." }] : []),
+    ...(facts.clubWithOffers === false ? [{ q: `Can a ${brand.name} gift card be combined with other offers?`, a: "No. The brand's terms state that the gift card cannot be clubbed with other offers or promotions." }] : []),
+    { q: `How do I buy a ${brand.name} gift card on SaverPe?`, a: `Tap "Buy now" on this page, choose a card value and quantity (up to 5), and share your name, email and mobile number. Our team will contact you soon to complete the purchase.` },
   ];
 
   // WebPage + Brand (no Product/Offer): there is no live purchase flow yet.
@@ -84,6 +135,8 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
     inLanguage: "en-IN",
     primaryImageOfPage: absoluteUrl(brandImage(brand)),
     about: { "@type": "Brand", name: brand.name },
+    abstract: answer,
+    speakable: { "@type": "SpeakableSpecification", cssSelector: ["#quick-answer"] },
     isPartOf: { "@id": `${site.url}/#website` },
   };
 
@@ -104,6 +157,11 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
               <h1 className="h-display mt-4">{brand.name} E-Gift Card</h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
                 Give the gift of choice with a {brand.name} e-gift card — delivered digitally and ready to redeem as per {brand.name}&apos;s terms. Ideal for {brand.occasions.slice(0, 3).map((o) => getOccasion(o)?.name.toLowerCase()).filter(Boolean).join(", ") || "birthdays, festivals and thank-yous"}.
+              </p>
+
+              <p id="quick-answer" className="mt-5 flex max-w-2xl gap-3 rounded-2xl border border-brand-200 bg-brand-50 p-4 text-sm leading-6 text-ink-soft">
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-brand-800" aria-hidden />
+                <span><strong className="text-ink">Quick answer:</strong> {answer}</span>
               </p>
 
               <dl className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -150,6 +208,24 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
       <div className="container-page mt-14 grid gap-10 lg:grid-cols-[1fr_340px]">
         <div className="space-y-12">
           <section>
+            <h2 className="h-section flex items-center gap-3"><ListChecks className="size-8 text-brand-700" aria-hidden /> {brand.name} gift card: key facts</h2>
+            <div className="mt-6 overflow-hidden rounded-3xl border border-line bg-white">
+              <table className="w-full text-left text-sm">
+                <caption className="sr-only">{brand.name} e-gift card key facts</caption>
+                <tbody className="divide-y divide-line">
+                  {factRows.map((r) => (
+                    <tr key={r.label}>
+                      <th scope="row" className="w-1/2 bg-sand/60 px-5 py-3.5 font-bold text-ink">{r.label}</th>
+                      <td className="px-5 py-3.5 text-ink-soft">{r.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-2 text-xs text-muted">Summarised from the terms listed below. The brand&apos;s current terms always apply.</p>
+          </section>
+
+          <section>
             <h2 className="h-section">About the {brand.name} gift card</h2>
             <div className="prose-article">
               {description.map((p, i) => (
@@ -193,6 +269,25 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
             <h2 className="h-section mb-6">{brand.name} gift card FAQs</h2>
             <FaqList faqs={faqs} />
           </section>
+
+          {guides.length > 0 && (
+            <section>
+              <h2 className="h-section flex items-center gap-3"><BookOpen className="size-8 text-brand-700" aria-hidden /> Gifting guides featuring {brand.name}</h2>
+              <ul className="mt-6 grid gap-3">
+                {guides.map((g) => (
+                  <li key={g.slug}>
+                    <Link href={`/blog/${g.slug}`} className="card flex items-center justify-between gap-4 p-5 transition hover:border-brand">
+                      <span>
+                        <span className="block font-display font-bold">{g.title}</span>
+                        <span className="mt-1 line-clamp-2 block text-sm text-muted">{g.description}</span>
+                      </span>
+                      <ArrowRight className="size-5 shrink-0 text-muted" aria-hidden />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
 
         <aside className="space-y-5 lg:sticky lg:top-28 lg:self-start">

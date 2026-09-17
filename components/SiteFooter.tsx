@@ -3,6 +3,7 @@ import NextImage from "next/image";
 import { ArrowUpRight, Mail, ShieldCheck, Zap, Gift } from "lucide-react";
 import { categories, occasions, popularBrands } from "@/lib/brands";
 import { site } from "@/lib/site";
+import { businessServices } from "@/components/BusinessServices";
 
 export default function SiteFooter() {
   const year = new Date().getFullYear();
@@ -26,6 +27,15 @@ export default function SiteFooter() {
               </a>
             </div>
           </div>
+          <ul className="mt-6 flex flex-wrap gap-2 border-t border-ink/10 pt-6">
+            {businessServices.map((s) => (
+              <li key={s.title}>
+                <a href={`${site.orbitUrl}${s.path}`} className="inline-flex items-center gap-2 rounded-full bg-white/60 px-3.5 py-1.5 text-sm font-bold text-ink transition hover:bg-white">
+                  <s.icon className="size-4" aria-hidden /> {s.title}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="grid gap-10 pb-12 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr_1fr]">
@@ -53,6 +63,9 @@ export default function SiteFooter() {
             <FooterLink href="/how-it-works">How it works</FooterLink>
             <FooterLink href="/blog">Gifting blog</FooterLink>
             <FooterLink href="/faq">FAQs</FooterLink>
+            <FooterLink href="/glossary">Gift card glossary</FooterLink>
+            <FooterLink href="/gift-cards-under/500">Gift cards under ₹500</FooterLink>
+            <FooterLink href="/gift-cards-under/1000">Gift cards under ₹1,000</FooterLink>
           </FooterCol>
 
           <FooterCol title="Top categories">
@@ -74,6 +87,7 @@ export default function SiteFooter() {
           <FooterCol title="Company">
             <FooterLink href="/about-us">About SaverPe</FooterLink>
             <FooterLink href="/contact-us">Contact us</FooterLink>
+            <FooterLink href="/editorial-policy">Editorial policy</FooterLink>
             <FooterLink href="/privacy-policy">Privacy policy</FooterLink>
             <FooterLink href="/terms-of-service">Terms of service</FooterLink>
             <FooterLink href="/refund-policy">Refund policy</FooterLink>

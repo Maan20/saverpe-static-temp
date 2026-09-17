@@ -105,3 +105,21 @@ export function brandInitials(name: string) {
     .map((w) => w[0]!.toUpperCase())
     .join("");
 }
+
+/** Lowest value a brand's card can be bought for, or null when the brand doesn't publish one. */
+export function startingValue(price: BrandPrice) {
+  const d = price.denominations ?? [];
+  if (price.type === "range" && price.min) return price.min;
+  return d.length ? Math.min(...d) : null;
+}
+
+export const budgetTiers = [500, 1000, 2000] as const;
+
+export function brandsUnder(amount: number) {
+  return brands
+    .filter((b) => {
+      const v = startingValue(b.price);
+      return v !== null && v <= amount;
+    })
+    .sort((a, b) => Number(b.popular) - Number(a.popular));
+}

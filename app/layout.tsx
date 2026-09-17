@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   category: "shopping",
   alternates: {
     canonical: site.url,
-    types: { "application/rss+xml": `${site.url}/blog/rss.xml` },
+    types: { "application/rss+xml": `${site.url}/blog/rss.xml`, "text/plain": `${site.url}/llms.txt` },
   },
   openGraph: {
     type: "website",

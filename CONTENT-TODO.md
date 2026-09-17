@@ -38,3 +38,10 @@
 
 - [ ] Set `NEXT_PUBLIC_LEADS_API_URL`, `NEXT_PUBLIC_GA_MEASUREMENT_ID` and the search console verification tokens in production.
 - [ ] Submit `https://saverpe.com/sitemap.xml` to Google Search Console and Bing Webmaster Tools.
+
+## SEO additions (review before launch)
+- **/editorial-policy** describes a review and fact-check process. Make sure it matches how the content team actually works, and edit it if not.
+- **Brand key facts** (where to use, partial redemption, multiple cards, offers) are pulled automatically from each brand's T&Cs by `lib/brand-facts.ts`. Anything the terms don't state shows as "See brand terms". Spot-check the popular brands.
+- **/glossary** mentions RBI PPI rules at a high level. Get compliance to review it.
+- **IndexNow:** set `INDEXNOW_KEY`, deploy, then run `INDEXNOW_KEY=… node ../scripts/indexnow.mjs https://saverpe.com` after each content release.
+- Submit `/sitemap.xml` in Google Search Console and Bing Webmaster Tools. Set `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` and `NEXT_PUBLIC_BING_SITE_VERIFICATION`.
