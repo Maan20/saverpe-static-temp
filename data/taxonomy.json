@@ -1,0 +1,126 @@
+{
+ "categories": [
+  {
+   "id": "fashion-lifestyle",
+   "name": "Fashion & Lifestyle"
+  },
+  {
+   "id": "e-commerce",
+   "name": "E-Commerce"
+  },
+  {
+   "id": "food-dining",
+   "name": "Food & Dining"
+  },
+  {
+   "id": "travel",
+   "name": "Travel"
+  },
+  {
+   "id": "jewellery",
+   "name": "Jewellery"
+  },
+  {
+   "id": "electronics",
+   "name": "Electronics"
+  },
+  {
+   "id": "home-needs",
+   "name": "Home Needs"
+  },
+  {
+   "id": "home-furnishings",
+   "name": "Home Furnishings"
+  },
+  {
+   "id": "health-beauty",
+   "name": "Health & Beauty"
+  },
+  {
+   "id": "entertainment",
+   "name": "Entertainment"
+  },
+  {
+   "id": "gaming",
+   "name": "Gaming"
+  },
+  {
+   "id": "hospitality",
+   "name": "Hospitality"
+  },
+  {
+   "id": "international-brands",
+   "name": "International Brands"
+  },
+  {
+   "id": "sportswear-footwear",
+   "name": "Sportswear & Footwear"
+  },
+  {
+   "id": "subscriptions",
+   "name": "Subscriptions"
+  },
+  {
+   "id": "baby-products",
+   "name": "Baby Products"
+  },
+  {
+   "id": "books",
+   "name": "Books"
+  },
+  {
+   "id": "finance-insurance",
+   "name": "Finance & Insurance"
+  }
+ ],
+ "occasions": [
+  {
+   "id": "birthday",
+   "name": "Birthday"
+  },
+  {
+   "id": "anniversary",
+   "name": "Anniversary"
+  },
+  {
+   "id": "wedding",
+   "name": "Wedding"
+  },
+  {
+   "id": "house-warming",
+   "name": "House Warming"
+  },
+  {
+   "id": "new-year",
+   "name": "New Year"
+  },
+  {
+   "id": "diwali",
+   "name": "Diwali"
+  },
+  {
+   "id": "eid",
+   "name": "Eid"
+  },
+  {
+   "id": "rakhi",
+   "name": "Rakhi"
+  },
+  {
+   "id": "valentines-day",
+   "name": "Valentine's Day"
+  },
+  {
+   "id": "mothers-day",
+   "name": "Mother's Day"
+  },
+  {
+   "id": "fathers-day",
+   "name": "Father's Day"
+  },
+  {
+   "id": "easter",
+   "name": "Easter"
+  }
+ ]
+}
