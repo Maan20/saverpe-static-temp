@@ -65,7 +65,7 @@ export default function BuyNow({ brand, className = "" }: { brand: BuyBrand; cla
       if (!apiUrl) {
         await new Promise((r) => setTimeout(r, 600)); // mock mode without backend
       } else {
-        const res = await fetch(`${apiUrl}/api/buy-request/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const res = await fetch(`${apiUrl}/saverpe/buy-request/`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
         const body = await res.json().catch(() => null);
         if (!res.ok || body?.success === false) {
           if (body?.errors) setErrors(Object.fromEntries(Object.entries(body.errors as Record<string, string[]>).map(([k, v]) => [k, String(Array.isArray(v) ? v[0] : v)])));

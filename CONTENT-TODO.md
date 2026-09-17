@@ -5,7 +5,7 @@
 - [ ] **Testimonials** on the home page (`app/page.tsx`, `testimonials`) are illustrative. Replace with verified customer reviews, or remove them.
 - [ ] **About page timeline and founder quote** (`app/about-us/page.tsx`) are generic. Add real milestones, dates and a named founder note.
 - [ ] **Hero stats** ("290+ brands", "18 categories", "12 occasions") come from the generated catalog. Re-check them after regenerating brand data.
-- [ ] **Buy now flow**: requests go to `/api/buy-request/`; make sure the support team has a process (and SLA) to call buyers back and take payment.
+- [ ] **Buy now flow**: requests go to `/saverpe/buy-request/`; make sure the support team has a process (and SLA) to call buyers back and take payment.
 - [ ] **Support hours and response time** ("within one business day, Mon–Sat") in contact pages and FAQs: confirm with the support team.
 
 ## Legal (TODO: legal review)
