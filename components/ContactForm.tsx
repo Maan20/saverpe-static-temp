@@ -48,7 +48,7 @@ export default function ContactForm() {
         // Mock mode: no backend configured (frontend-only development).
         await new Promise((r) => setTimeout(r, 600));
       } else {
-        const res = await fetch(`${apiUrl}/api/contact-us/`, {
+        const res = await fetch(`${apiUrl}/saverpe/contact-us/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
